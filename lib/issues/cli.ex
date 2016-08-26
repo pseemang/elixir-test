@@ -39,12 +39,12 @@ defmodule Issues.CLI do
 
     def process({user, project, _count}) do
         Issues.GithubIssues.fetch(user, project)
-        |> decode_response
-        |> convert_to_list_of_maps
+        |> Issues.GithubIssues.decode_response
+        |> Issues.GithubIssues.convert_to_list_of_maps
+        |> sort_into_ascending_order
     end
 
     def sort_into_ascending_order(list_of_issues) do
-        Enum.sort list_of_issues,
-                  fn i1, i2 -> i1["created_at"] <= i2["created_at"]
+        Enum.sort list_of_issues, fn i1, i2 -> i1["created_at"] <= i2["created_at"] end
     end
 end
