@@ -37,14 +37,17 @@ defmodule Issues.CLI do
         System.halt(0)
     end
 
-    def process({user, project, _count}) do
+    def process({user, project, count}) do
         Issues.GithubIssues.fetch(user, project)
         |> Issues.GithubIssues.decode_response
         |> Issues.GithubIssues.convert_to_list_of_maps
         |> sort_into_ascending_order
+        |> Enum.take(count)
+        #|> print_table_for_columns(["number", "created_at", "title"])
     end
 
     def sort_into_ascending_order(list_of_issues) do
-        Enum.sort list_of_issues, fn i1, i2 -> i1["created_at"] <= i2["created_at"] end
+        Enum.sort list_of_issues, 
+                  fn i1, i2 -> i1["created_at"] <= i2["created_at"] end
     end
 end
